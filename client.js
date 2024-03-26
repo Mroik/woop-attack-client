@@ -48,7 +48,7 @@ let board = {
 
 			context = canv.getContext("2d");
 			context.fillStyle = "black";
-			context.globalAlpha = 0.3;
+			context.globalAlpha = 0.2;
 			context.font = "30px Arial";
 			context.fillText(`(${x}, ${y})`, 10, 50);
 			context.globalAlpha = 1;
@@ -63,23 +63,26 @@ let board = {
 		this.context.beginPath();
 		this.context.globalAlpha = 0.05;
 		for(let i = 0; i < BOARD_SIZE; i++) {
-			this.context.moveTo(i * size, 0);
-			this.context.lineTo(i * size, BOARD_SIZE * size);
+			this.context.moveTo(i * size + this.boardOffsetX, 0 + this.boardOffsetY);
+			this.context.lineTo(i * size + this.boardOffsetX, BOARD_SIZE * size + this.boardOffsetY);
 
-			this.context.moveTo(0, i * size);
-			this.context.lineTo(BOARD_SIZE * size, i * size);
+			this.context.moveTo(0 + this.boardOffsetX, i * size + this.boardOffsetY);
+			this.context.lineTo(BOARD_SIZE * size + this.boardOffsetX, i * size + this.boardOffsetY);
 		}
 		this.context.stroke();
 		this.context.globalAlpha = 1;
 
 		this.entities.forEach((entity) => {
 			this.context.fillStyle = entity.type;
-			this.context.fillRect(entity.x * size, entity.y * size, size, size);
+			this.context.fillRect(entity.x * size + this.boardOffsetX, entity.y * size + this.boardOffsetY, size, size);
 		});
 	},
 	edgeLength: function() {
 		return this.canvas.width * this.multiplier;
 	},
+	isDragging: false,
+	boardOffsetX: 0,
+	boardOffsetY: 0,
 };
 
 board.entities.push(new Zord("mroik", 50, 50));
@@ -94,11 +97,32 @@ let redraw = () => {
 };
 let zoom = (ev) => {
 	ev.preventDefault();
+	ev.stopPropagation();
 	board.multiplier -= ev.deltaY * 0.001;
+	board.render();
+};
+let startDragging = (_) => {
+	board.isDragging = true;
+};
+let stopDragging = (_) => {
+	board.isDragging = false;
+};
+let dragBoard = (ev) => {
+	if(!board.isDragging) {
+		return;
+	}
+	board.boardOffsetX += ev.movementX;
+	board.boardOffsetY += ev.movementY;
 	board.render();
 };
 
 window.onload = () => {
 	window.addEventListener("resize", redraw, false);
 	board.canvas.addEventListener("wheel", zoom, false);
+	board.canvas.addEventListener("mousedown", startDragging, false);
+	board.canvas.addEventListener("mouseup", stopDragging, false);
+	board.canvas.addEventListener("mouseout", stopDragging, false);
+	board.canvas.addEventListener("mousemove", dragBoard, false);
+	board.init();
+	board.render();
 };
