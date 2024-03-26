@@ -41,8 +41,8 @@ let board = {
 		this.canvas.onmousemove = (ev) => {
 			let bounds = canv.getBoundingClientRect();
 			let size = this.edgeLength() / BOARD_SIZE;
-			let x = Math.floor((ev.clientX - bounds.left) / size);
-			let y = Math.floor((ev.clientY - bounds.top) / size);
+			let x = Math.floor((ev.clientX - bounds.left - this.boardOffsetX) / size);
+			let y = Math.floor((ev.clientY - bounds.top - this.boardOffsetY) / size);
 
 			this.render();
 
