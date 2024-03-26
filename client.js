@@ -25,14 +25,13 @@ let board = {
 		return canv;
 	}(),
 	init: function() {
-		let size = window.innerWidth;
-		if(window.innerHeight < window.innerWidth) {
-			size = innerHeight;
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = window.innerHeight;
+		if(this.canvas.width < this.canvas.height) {
+			this.canvas.height -= 130;
+		} else {
+			this.canvas.width -= 130;
 		}
-		size -= 50;
-
-		this.canvas.width = size;
-		this.canvas.height = size;
 		this.context = this.canvas.getContext("2d");
 		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
 
@@ -94,6 +93,7 @@ let redraw = () => {
 	let b = document.getElementById("board-game");
 	b.remove();
 	board.init();
+	board.render();
 };
 let zoom = (ev) => {
 	ev.preventDefault();
