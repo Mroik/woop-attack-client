@@ -18,6 +18,7 @@ function Totem(x, y) {
 }
 
 let board = {
+	multiplier: 1,
 	canvas: function() {
 		let canv = document.createElement("canvas");
 		canv.setAttribute("id", "board-game");
@@ -39,7 +40,7 @@ let board = {
 		canv = this.canvas;
 		this.canvas.onmousemove = (ev) => {
 			let bounds = canv.getBoundingClientRect();
-			let size = canv.width / BOARD_SIZE;
+			let size = this.edgeLength() / BOARD_SIZE;
 			let x = Math.floor((ev.clientX - bounds.left) / size);
 			let y = Math.floor((ev.clientY - bounds.top) / size);
 
@@ -56,12 +57,28 @@ let board = {
 	},
 	entities: [],
 	render: function() {
-		let size = this.canvas.width / BOARD_SIZE;
+		let size = this.edgeLength() / BOARD_SIZE;
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+		this.context.beginPath();
+		this.context.globalAlpha = 0.05;
+		for(let i = 0; i < BOARD_SIZE; i++) {
+			this.context.moveTo(i * size, 0);
+			this.context.lineTo(i * size, BOARD_SIZE * size);
+
+			this.context.moveTo(0, i * size);
+			this.context.lineTo(BOARD_SIZE * size, i * size);
+		}
+		this.context.stroke();
+		this.context.globalAlpha = 1;
+
 		this.entities.forEach((entity) => {
 			this.context.fillStyle = entity.type;
 			this.context.fillRect(entity.x * size, entity.y * size, size, size);
 		});
+	},
+	edgeLength: function() {
+		return this.canvas.width * this.multiplier;
 	},
 };
 
@@ -69,10 +86,19 @@ board.entities.push(new Zord("mroik", 50, 50));
 board.entities.push(new Zord("fin", 40, 40));
 board.entities.push(new Totem(20, 20));
 
+// Events
 let redraw = () => {
 	let b = document.getElementById("board-game");
 	b.remove();
 	board.init();
 };
+let zoom = (ev) => {
+	ev.preventDefault();
+	board.multiplier -= ev.deltaY * 0.001;
+	board.render();
+};
 
-window.addEventListener("resize", redraw, false);
+window.onload = () => {
+	window.addEventListener("resize", redraw, false);
+	board.canvas.addEventListener("wheel", zoom, false);
+};
