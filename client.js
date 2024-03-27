@@ -61,7 +61,7 @@ let board = {
 
 		this.context.beginPath();
 		this.context.globalAlpha = 0.05;
-		for(let i = 0; i < BOARD_SIZE; i++) {
+		for(let i = 0; i < BOARD_SIZE + 1; i++) {
 			this.context.moveTo(i * size + this.boardOffsetX, 0 + this.boardOffsetY);
 			this.context.lineTo(i * size + this.boardOffsetX, BOARD_SIZE * size + this.boardOffsetY);
 
