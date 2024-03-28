@@ -1,14 +1,18 @@
+const BASE_URL = "http://127.0.0.1:6969"
 const EntityType = {
 	Zord: "red",
 	Totem: "green",
 }
 const BOARD_SIZE = 140;
 
-function Zord(player, x, y) {
+function Zord(player, x, y, shield, range, hp) {
 	this.type = EntityType.Zord;
 	this.player = player;
 	this.x = x;
 	this.y = y;
+	this.shield = shield;
+	this.range = range;
+	this.hp = hp;
 }
 
 function Totem(x, y) {
@@ -82,11 +86,32 @@ let board = {
 	isDragging: false,
 	boardOffsetX: 0,
 	boardOffsetY: 0,
+	getMapData: function() {
+		const xhr = new XMLHttpRequest();
+		xhr.open("POST", BASE_URL + "/map");
+		xhr.send();
+		xhr.responseType = "json";
+		xhr.onload = () => {
+			const data = xhr.response.map;
+			this.entities = [];
+			data.forEach(e => {
+				if(e.zord) {
+					this.entities.push(new Zord(
+						e.zord.owner,
+						e.zord.x,
+						e.zord.y,
+						e.zord.shield,
+						e.zord.increase,
+						e.zord.hp
+					));
+				} else if(e.totem) {
+					this.entities.push(new Totem(e.totem.x, e.totem.y));
+				}
+			});
+			this.render();
+		};
+	},
 };
-
-board.entities.push(new Zord("mroik", 50, 50));
-board.entities.push(new Zord("fin", 40, 40));
-board.entities.push(new Totem(20, 20));
 
 // Events
 let redraw = () => {
@@ -123,6 +148,7 @@ window.onload = () => {
 	board.canvas.addEventListener("mouseup", stopDragging, false);
 	board.canvas.addEventListener("mouseout", stopDragging, false);
 	board.canvas.addEventListener("mousemove", dragBoard, false);
+	setInterval(() => board.getMapData(), 10000);
 	board.init();
 	board.render();
 };
