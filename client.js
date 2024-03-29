@@ -120,7 +120,7 @@ let redraw = () => {
 let zoom = (ev) => {
 	ev.preventDefault();
 	ev.stopPropagation();
-	board.multiplier -= ev.deltaY * 0.001;
+	board.multiplier -= ev.deltaY * 0.0005;
 	board.render();
 };
 let startDragging = (_) => {
