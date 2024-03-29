@@ -149,6 +149,7 @@ function generateCanvas() {
 
 window.onload = () => {
 	window.addEventListener("resize", redraw, false);
+	board.canvas = generateCanvas();
 	board.canvas.addEventListener("wheel", zoom, false);
 	board.canvas.addEventListener("mousedown", startDragging, false);
 	board.canvas.addEventListener("mouseup", stopDragging, false);
