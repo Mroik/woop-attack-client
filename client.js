@@ -63,6 +63,9 @@ let board = {
 
 		this.entities.forEach((entity) => {
 			this.context.fillStyle = entity.type;
+			if(entity.type == EntityType.Zord && entity.player == this.username) {
+				this.context.fillStyle = "blue";
+			}
 			this.context.fillRect(entity.x * size + this.boardOffsetX, entity.y * size + this.boardOffsetY, size, size);
 		});
 		this.context.fillStyle = "black";
@@ -118,6 +121,8 @@ let board = {
 		};
 	},
 	fetchCounter: 10,
+	username: null,
+	token: null,
 };
 
 // Events
@@ -158,6 +163,16 @@ let generateCanvas = () => {
 }
 
 window.onload = () => {
+	let login = document.getElementById("login");
+	login.onclick = (_) => {
+		let user = document.getElementById("username");
+		let token = document.getElementById("token");
+		board.username = user.value.trim();
+		board.token = token.value.trim();
+		user.value = null;
+		token.value = null;
+		board.render();
+	};
 	window.addEventListener("resize", generateCanvas, false);
 	generateCanvas();
 	board.canvas.addEventListener("wheel", zoom, false);
