@@ -1,17 +1,23 @@
 <html>
 	<head>
+		<link rel="stylesheet" type="text/css" href="style.css">
 		<script src="client.js"></script>
 	</head>
-	<body style="margin: auto">
+	<body>
 		<div id="board-slot"></div>
 
-		<div>
+		<div id="controls">
 			<div>
 				<table id="leaderboard">
 				</table>
 			</div>
 
 			<div id="buttons">
+				<div>
+					User: <input type="textbox" id="username">
+					Token: <input type="password" id="token">
+					<button id="login">Set credentials</button>
+				</div>
 			</div>
 		</div>
 	</body>
