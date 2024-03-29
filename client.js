@@ -115,10 +115,10 @@ let board = {
 		xhr.onload = () => {
 			const data = xhr.response.leaderboard;
 			let lead = data
-				.map(player => `<li>Name: ${player.name}, Points: ${player.points}, Actions: ${player.actions}</li>`)
+				.map(player => `<tr><td>${player.name}</td><td>${player.points}</td><td>${player.actions}</td></tr>`)
 				.join("");
 			let paren = document.getElementById("leaderboard");
-			paren.innerHTML = lead;
+			paren.innerHTML = "<tr><td>Name</td><td>Points</td><td>Actions</td>" + lead;
 		};
 	},
 	fetchCounter: 10,
