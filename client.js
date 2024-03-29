@@ -25,15 +25,11 @@ let board = {
 	multiplier: 1,
 	canvas: null,
 	init: function() {
+		let canv_div = document.getElementById("board-slot");
 		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
-		if(this.canvas.width < this.canvas.height) {
-			this.canvas.height -= 130;
-		} else {
-			this.canvas.width -= 130;
-		}
+		this.canvas.height = window.innerHeight - 100;
 		this.context = this.canvas.getContext("2d");
-		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+		canv_div.appendChild(this.canvas);
 
 		// Show coord on canvas
 		canv = this.canvas;
@@ -125,12 +121,6 @@ let board = {
 };
 
 // Events
-let redraw = () => {
-	let b = document.getElementById("board-game");
-	b.remove();
-	board.init();
-	board.render();
-};
 let zoom = (ev) => {
 	ev.preventDefault();
 	ev.stopPropagation();
@@ -152,18 +142,24 @@ let dragBoard = (ev) => {
 	board.render();
 };
 
-function generateCanvas() {
+let generateCanvas = () => {
 	let paren = document.getElementById("board-slot");
+	let old = document.getElementById("board-game");
+	if(old) {
+		old.remove();
+	}
 	let canv = document.createElement("canvas");
 	canv.setAttribute("style", "border: 1px solid black");
 	paren.appendChild(canv);
 	canv.setAttribute("id", "board-game");
-	return canv;
+	board.canvas = canv;
+	board.init();
+	board.render();
 }
 
 window.onload = () => {
-	window.addEventListener("resize", redraw, false);
-	board.canvas = generateCanvas();
+	window.addEventListener("resize", generateCanvas, false);
+	generateCanvas();
 	board.canvas.addEventListener("wheel", zoom, false);
 	board.canvas.addEventListener("mousedown", startDragging, false);
 	board.canvas.addEventListener("mouseup", stopDragging, false);
