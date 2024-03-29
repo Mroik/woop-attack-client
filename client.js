@@ -107,6 +107,20 @@ let board = {
 			this.fetchCounter = 10;
 		};
 	},
+	getLeaderboard: function() {
+		const xhr = new XMLHttpRequest();
+		xhr.open("POST", BASE_URL + "/leaderboard");
+		xhr.send();
+		xhr.responseType = "json";
+		xhr.onload = () => {
+			const data = xhr.response.leaderboard;
+			let lead = data
+				.map(player => `<li>Name: ${player.name}, Points: ${player.points}, Actions: ${player.actions}</li>`)
+				.join("");
+			let paren = document.getElementById("leaderboard");
+			paren.innerHTML = lead;
+		};
+	},
 	fetchCounter: 10,
 };
 
@@ -160,6 +174,7 @@ window.onload = () => {
 		if(board.fetchCounter <= 0) {
 			board.fetchCounter = 10;
 			board.getMapData();
+			board.getLeaderboard();
 		}
 		board.render();
 	}, 1000);
