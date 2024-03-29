@@ -23,11 +23,7 @@ function Totem(x, y) {
 
 let board = {
 	multiplier: 1,
-	canvas: function() {
-		let canv = document.createElement("canvas");
-		canv.setAttribute("id", "board-game");
-		return canv;
-	}(),
+	canvas: null,
 	init: function() {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
@@ -44,20 +40,14 @@ let board = {
 		this.canvas.onmousemove = (ev) => {
 			let bounds = canv.getBoundingClientRect();
 			let size = this.edgeLength() / BOARD_SIZE;
-			let x = Math.floor((ev.clientX - bounds.left - this.boardOffsetX) / size);
-			let y = Math.floor((ev.clientY - bounds.top - this.boardOffsetY) / size);
+			this.x = Math.floor((ev.clientX - bounds.left - this.boardOffsetX) / size);
+			this.y = Math.floor((ev.clientY - bounds.top - this.boardOffsetY) / size);
 
 			this.render();
-
-			context = canv.getContext("2d");
-			context.fillStyle = "black";
-			context.globalAlpha = 0.2;
-			context.font = "30px Arial";
-			context.fillText(`(${x}, ${y})`, 10, 50);
-			context.globalAlpha = 1;
 		};
-		// TODO Set interval to 10 sec to fetch data from server and render
 	},
+	x: 0,
+	y: 0,
 	entities: [],
 	render: function() {
 		let size = this.edgeLength() / BOARD_SIZE;
@@ -79,6 +69,12 @@ let board = {
 			this.context.fillStyle = entity.type;
 			this.context.fillRect(entity.x * size + this.boardOffsetX, entity.y * size + this.boardOffsetY, size, size);
 		});
+		this.context.fillStyle = "black";
+		this.context.globalAlpha = 0.2;
+		this.context.font = "30px Arial";
+		this.context.fillText(`(${this.x}, ${this.y})`, 10, 50);
+		this.context.fillText(this.fetchCounter , 600, 50);
+		this.context.globalAlpha = 1;
 	},
 	edgeLength: function() {
 		return this.canvas.width * this.multiplier;
@@ -108,9 +104,10 @@ let board = {
 					this.entities.push(new Totem(e.totem.x, e.totem.y));
 				}
 			});
-			this.render();
+			this.fetchCounter = 10;
 		};
 	},
+	fetchCounter: 10,
 };
 
 // Events
@@ -141,6 +138,15 @@ let dragBoard = (ev) => {
 	board.render();
 };
 
+function generateCanvas() {
+	let paren = document.getElementById("board-slot");
+	let canv = document.createElement("canvas");
+	canv.setAttribute("style", "border: 1px solid black");
+	paren.appendChild(canv);
+	canv.setAttribute("id", "board-game");
+	return canv;
+}
+
 window.onload = () => {
 	window.addEventListener("resize", redraw, false);
 	board.canvas.addEventListener("wheel", zoom, false);
@@ -148,7 +154,14 @@ window.onload = () => {
 	board.canvas.addEventListener("mouseup", stopDragging, false);
 	board.canvas.addEventListener("mouseout", stopDragging, false);
 	board.canvas.addEventListener("mousemove", dragBoard, false);
-	setInterval(() => board.getMapData(), 10000);
+	setInterval(() => {
+		board.fetchCounter--;
+		if(board.fetchCounter <= 0) {
+			board.fetchCounter = 10;
+			board.getMapData();
+		}
+		board.render();
+	}, 1000);
 	board.init();
 	board.render();
 };
