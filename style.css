@@ -5,3 +5,11 @@ body {
 #controls div {
 	float: left;
 }
+
+#info td {
+	border: 1px solid;
+}
+
+#leaderboard td {
+	border: 1px solid;
+}

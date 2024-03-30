@@ -39,12 +39,25 @@ let board = {
 			this.x = Math.floor((ev.clientX - bounds.left - this.boardOffsetX) / size);
 			this.y = Math.floor((ev.clientY - bounds.top - this.boardOffsetY) / size);
 
+			this.updateInfo();
 			this.render();
 		};
 	},
 	x: 0,
 	y: 0,
 	entities: [],
+	updateInfo: function() {
+		let t = document.getElementById("info");
+		let info = this.entities.find(entity => {
+			return (entity.type == EntityType.Zord && entity.x == this.x && entity.y == this.y);
+		});
+		if(info) {
+			let base = Object.keys(info).filter(i => i != "type");
+			let first = base.map(k => `<td>${k}</td>`).join("");
+			let second = base.map(k => `<td>${info[k]}</td>`).join("");
+			t.innerHTML = "<tr>" + first + "</tr><tr>" + second + "</tr>";
+		}
+	},
 	render: function() {
 		let size = this.edgeLength() / BOARD_SIZE;
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -95,8 +108,8 @@ let board = {
 						e.zord.owner,
 						e.zord.x,
 						e.zord.y,
-						e.zord.shield,
-						e.zord.increase,
+						e.zord.shields,
+						e.zord.range,
 						e.zord.hp
 					));
 				} else if(e.totem) {
@@ -149,10 +162,6 @@ let dragBoard = (ev) => {
 
 let generateCanvas = () => {
 	let paren = document.getElementById("board-slot");
-	let old = document.getElementById("board-game");
-	if(old) {
-		old.remove();
-	}
 	let canv = document.createElement("canvas");
 	canv.setAttribute("style", "border: 1px solid black");
 	paren.appendChild(canv);
@@ -162,7 +171,25 @@ let generateCanvas = () => {
 	board.render();
 }
 
+let fetchingCounter = () => {
+	board.fetchCounter--;
+	if(board.fetchCounter <= 0) {
+		board.fetchCounter = 10;
+		board.getMapData();
+		board.getLeaderboard();
+	}
+	board.render();
+};
+
 window.onload = () => {
+	//window.addEventListener("resize", generateCanvas, false);
+	generateCanvas();
+	board.canvas.addEventListener("wheel", zoom, false);
+	board.canvas.addEventListener("mousedown", startDragging, false);
+	board.canvas.addEventListener("mouseup", stopDragging, false);
+	board.canvas.addEventListener("mouseout", stopDragging, false);
+	board.canvas.addEventListener("mousemove", dragBoard, false);
+
 	let login = document.getElementById("login");
 	login.onclick = (_) => {
 		let user = document.getElementById("username");
@@ -173,22 +200,7 @@ window.onload = () => {
 		token.value = null;
 		board.render();
 	};
-	window.addEventListener("resize", generateCanvas, false);
-	generateCanvas();
-	board.canvas.addEventListener("wheel", zoom, false);
-	board.canvas.addEventListener("mousedown", startDragging, false);
-	board.canvas.addEventListener("mouseup", stopDragging, false);
-	board.canvas.addEventListener("mouseout", stopDragging, false);
-	board.canvas.addEventListener("mousemove", dragBoard, false);
-	setInterval(() => {
-		board.fetchCounter--;
-		if(board.fetchCounter <= 0) {
-			board.fetchCounter = 10;
-			board.getMapData();
-			board.getLeaderboard();
-		}
-		board.render();
-	}, 1000);
+	setInterval(fetchingCounter, 1000);
 	board.init();
 	board.render();
 };
