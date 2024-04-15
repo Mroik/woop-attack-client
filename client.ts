@@ -7,51 +7,51 @@ enum EntityType {
 }
 
 class Entity {
-	private x: number;
-	private y: number;
+	private _x: number;
+	private _y: number;
 
 	public constructor(x: number, y: number) {
-		this.x = x;
-		this.y = y;
+		this._x = x;
+		this._y = y;
 	}
 
-	public getX() {
-		return this.x;
+	get x() {
+		return this._x;
 	}
 
-	public getY() {
-		return this.y;
+	get y() {
+		return this._y;
 	}
 }
 
 class Zord extends Entity {
-	private player: string;
-	private shield: number;
-	private range: number;
-	private hp: number;
+	private _player: string;
+	private _shield: number;
+	private _range: number;
+	private _hp: number;
 
 	public constructor(player: string, x: number, y: number, shield: number, range: number, hp: number) {
 		super(x, y);
-		this.player = player;
-		this.shield = shield;
-		this.range = range;
-		this.hp = hp;
+		this._player = player;
+		this._shield = shield;
+		this._range = range;
+		this._hp = hp;
 	}
 
-    public getPlayer() {
-		return this.player;
+    get player() {
+		return this._player;
     }
 
-    public getHp() {
-		return this.hp;
+    get hp() {
+		return this._hp;
     }
 
-    public getRange() {
-		return this.range;
+    get range() {
+		return this._range;
     }
 
-    public getShields() {
-		return this.shield;
+    get shields() {
+		return this._shield;
     }
 }
 
@@ -68,15 +68,15 @@ class Game {
 	private currentX: number;
 	private currentY: number;
 	private entities: Array<Entity>;
-	private dragging: boolean;
+	private _isDragging: boolean;
 	private boardOffsetX: number;
 	private boardOffsetY: number;
 	private fetchCounter: number;
-	private username: string | null;
-	private token: string | null;
+	private _username: string | null;
+	private _token: string | null;
 
 	public constructor() {
-		this.dragging = false;
+		this._isDragging = false;
 		this.entities = [];
 		this.multiplier = 1;
 		this.currentX = 0;
@@ -84,8 +84,8 @@ class Game {
 		this.boardOffsetX = 0;
 		this.boardOffsetY = 0;
 		this.fetchCounter = COUNTER;
-		this.username = null;
-		this.token = null;
+		this._username = null;
+		this._token = null;
 
 		let paren = document.getElementById("board-slot") as HTMLDivElement;
 		this.canvas = document.createElement("canvas");
@@ -123,14 +123,14 @@ class Game {
 		this.context.globalAlpha = 1;
 
 		this.entities.forEach(entity => {
-			if(entity instanceof Zord && (entity as Zord).getPlayer() == this.username) {
+			if(entity instanceof Zord && (entity as Zord).player == this._username) {
 				this.context.fillStyle = "blue";
 			} else if(entity instanceof Zord) {
 				this.context.fillStyle = EntityType.Zord;
 			} else {
 				this.context.fillStyle = EntityType.Totem;
 			}
-			this.context.fillRect(entity.getX() * size + this.boardOffsetX, entity.getY() * size + this.boardOffsetY, size, size);
+			this.context.fillRect(entity.x * size + this.boardOffsetX, entity.y * size + this.boardOffsetY, size, size);
 		});
 
 		this.context.fillStyle = "black";
@@ -144,18 +144,18 @@ class Game {
     private updateInfo() {
 		let info = document.getElementById("info") as HTMLTableElement;
 		let data = this.entities.find(entity => {
-			return (entity instanceof Zord && entity.getX() == this.currentX && entity.getY() == this.currentY);
+			return (entity instanceof Zord && entity.x == this.currentX && entity.y == this.currentY);
 		}) as Zord;
 		if(data) {
 			let base = Object.keys(data);
 			let first = base.map(k => `<td>${k}</td>`).join("");
 			let second = [
-				`${data.getX()}`,
-				`${data.getY()}`,
-				`${data.getPlayer()}`,
-				`${data.getShields()}`,
-				`${data.getRange()}`,
-				`${data.getHp()}`,
+				`${data.x}`,
+				`${data.x}`,
+				`${data.player}`,
+				`${data.shields}`,
+				`${data.range}`,
+				`${data.hp}`,
 			].map(d => `<td>${d}</td>`).join("");
 			info.innerHTML = `<tr>${first}</tr><tr>${second}</tr>`;
 		}
@@ -210,12 +210,12 @@ class Game {
 		this.multiplier -= m;
 	}
 	
-	public setDragging(d: boolean) {
-		this.dragging = d;
+	set isDragging(d: boolean) {
+		this._isDragging = d;
 	}
 
-	public isDragging() {
-		return this.dragging;
+	get isDragging() {
+		return this._isDragging;
 	}
 
     public addBoardOffsetX(movementX: number) {
@@ -242,11 +242,12 @@ class Game {
 		this.canvas.addEventListener(event, callable, false);
     }
 
-    public setToken(tok: string) {
-		this.token = tok;
+    set token(tok: string) {
+		this._token = tok;
     }
-    public setUsername(user: string) {
-		this.username = user;
+
+    set username(user: string) {
+		this._username = user;
     }
 }
 
@@ -261,15 +262,15 @@ let zoom = (ev: WheelEvent) => {
 };
 
 let startDragging = (_: any) => {
-	game.setDragging(true);
+	game.isDragging = true;
 };
 
 let stopDragging = (_: any) => {
-	game.setDragging(false);
+	game.isDragging = false;
 };
 
 let dragBoard = (ev: MouseEvent) => {
-	if(!game.isDragging()) {
+	if(!game.isDragging) {
 		return;
 	}
 	game.addBoardOffsetX(ev.movementX);
@@ -299,8 +300,8 @@ window.onload = () => {
 	login.onclick = (_) => {
 		let user = document.getElementById("username") as HTMLInputElement;
 		let token = document.getElementById("token") as HTMLInputElement;
-		game.setUsername(user.value.trim());
-		game.setToken(token.value.trim());
+		game.username = user.value.trim();
+		game.token = token.value.trim();
 		user.value = "";
 		token.value = "";
 		game.render();
