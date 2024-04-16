@@ -6,6 +6,220 @@ enum EntityType {
 	Totem = "green",
 }
 
+class Activity {}
+
+class ShootActivity extends Activity {
+	public from: [number, number];
+	public shooter: string;
+	public target: string;
+	public timestamp: number;
+	public to: [number, number];
+
+	public constructor(activity: any) {
+		super();
+		this.from = activity.from;
+		this.shooter = activity.shooter;
+		this.target = activity.target;
+		this.timestamp = activity.timestamp;
+		this.to = activity.to;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Shoot</tr>";
+		text += `<tr><td>from</td><td>${this.from}</td><tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
+class MoveActivity extends Activity {
+	public from: [number, number];
+	public player: string;
+	public timestamp: number;
+	public to: [number, number];
+
+	public constructor(activity: any) {
+		super();
+		this.from = activity.from;
+		this.player = activity.player;
+		this.timestamp = activity.timestamp;
+		this.to = activity.to;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Move</tr>";
+		text += `<tr><td>from</td><td>${this.from}</td></tr>`;
+		text += `<tr><td>player</td><td>${this.player}</td></tr>`;
+		text += `<tr><td>timestamp</td><td>${this.timestamp}</td></tr>`;
+		text += `<tr><td>to</td><td>${this.to}</td></tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
+class ShieldActivity extends Activity {
+	public player: string;
+	public timestamp: number;
+	public zord_coord: [number, number];
+
+	public constructor(activity: any) {
+		super();
+		this.player = activity.player;
+		this.timestamp = activity.timestamp;
+		this.zord_coord = activity.zord_coord;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Generate Shield</tr>";
+		text += `<tr><td>player</td><td>${this.player}</td></tr>`;
+		text += `<tr><td>timestamp</td><td>${this.timestamp}</td></tr>`;
+		text += `<tr><td>zord_coord</td><td>${this.zord_coord}</td></tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
+class IncreaseRangeActivity extends Activity {
+	public player: string;
+	public timestamp: number;
+	public zord_coord: [number, number];
+
+	public constructor(activity: any) {
+		super();
+		this.player = activity.player;
+		this.timestamp = activity.timestamp;
+		this.zord_coord = activity.zord_coord;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Increase Range</tr>";
+		text += `<tr><td>player</td><td>${this.player}</td></tr>`;
+		text += `<tr><td>timestamp</td><td>${this.timestamp}</td></tr>`;
+		text += `<tr><td>zord_coord</td><td>${this.zord_coord}</td></tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
+class DonatePointsActivity extends Activity {
+	public from: string;
+	public timestamp: number;
+	public to: string;
+
+	public constructor(activity: any) {
+		super();
+		this.from = activity.from;
+		this.timestamp = activity.timestamp;
+		this.to = activity.to;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Donate Points</tr>";
+		text += `<tr><td>from</td><td>${this.from}</td></tr>`;
+		text += `<tr><td>timestamp</td><td>${this.timestamp}</td></tr>`;
+		text += `<tr><td>to</td><td>${this.to}</td></tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
+class BuildZordActivity extends Activity {
+	public player: string;
+	public timestamp: number;
+	public zord_coord: [number, number];
+
+	public constructor(activity: any) {
+		super();
+		this.player = activity.player;
+		this.timestamp = activity.timestamp;
+		this.zord_coord = activity.zord_coord;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Build Zord</tr>";
+		text += `<tr><td>player</td><td>${this.player}</td></tr>`;
+		text += `<tr><td>timestamp</td><td>${this.timestamp}</td></tr>`;
+		text += `<tr><td>zord_coord</td><td>${this.zord_coord}</td></tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
+class TotemPointsActivity extends Activity {
+	public coord: [number, number];
+	public player: string;
+	public points: number;
+	public timestamp: number;
+
+	public constructor(activity: any) {
+		super();
+		this.coord = activity.coord;
+		this.player = activity.player;
+		this.points = activity.points;
+		this.timestamp = activity.timestamp;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Totem Points</tr>";
+		text += `<tr><td>coord</td><td>${this.coord}</td></tr>`;
+		text += `<tr><td>player</td><td>${this.player}</td></tr>`;
+		text += `<tr><td>points</td><td>${this.points}</td></tr>`;
+		text += `<tr><td>timestamp</td><td>${this.timestamp}</td></tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
+class RespawnActivity extends Activity {
+	public coord: [number, number];
+	public player: string;
+	public timestamp: number;
+
+	public constructor(activity: any) {
+		super();
+		this.coord = activity.coord;
+		this.player = activity.player;
+		this.timestamp = activity.timestamp;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Respawn</tr>";
+		text += `<tr><td>coord</td><td>${this.coord}</td></tr>`;
+		text += `<tr><td>player</td><td>${this.player}</td></tr>`;
+		text += `<tr><td>timestamp</td><td>${this.timestamp}</td></tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
+class TotemSpawnActivity extends Activity {
+	public coord: [number, number];
+	public timestamp: number;
+
+	public constructor(activity: any) {
+		super();
+		this.coord = activity.coord;
+		this.timestamp = activity.timestamp;
+	}
+
+	public toString() {
+		let text = "<table>";
+		text += "<tr>Totem Spawned</tr>";
+		text += `<tr><td>coord</td><td>${this.coord}</td></tr>`;
+		text += `<tr><td>timestamp</td><td>${this.timestamp}</td></tr>`;
+		text += "</table>";
+		return text;
+	}
+}
+
 class Entity {
 	private _x: number;
 	private _y: number;
@@ -226,6 +440,43 @@ class Game {
 		};
 	}
 
+	public getLogs() {
+		const xhr = new XMLHttpRequest();
+		xhr.open("POST", BASE_URL + "/activity");
+		xhr.send();
+		xhr.responseType = "json";
+		xhr.onload = () => {
+			const data = xhr.response.activity as Array<any>;
+			let modal_data = data.map(ac => {
+				let d = this.parseActivity(ac) as Activity;
+				return d.toString();
+			}).join("<br/>");
+			this.enableModal(modal_data);
+		};
+	}
+
+	private parseActivity(activity: any) {
+		if(activity.shoot) {
+			return new ShootActivity(activity.shoot);
+		} else if(activity.move) {
+			return new MoveActivity(activity.move);
+		} else if(activity.generate_shield) {
+			return new ShieldActivity(activity.generate_shield);
+		} else if(activity.increase_range) {
+			return new IncreaseRangeActivity(activity.increase_range);
+		} else if(activity.donate_points) {
+			return new DonatePointsActivity(activity.donate_points);
+		} else if(activity.build_zord) {
+			return new BuildZordActivity(activity.build_zord);
+		} else if(activity.totem_points) {
+			return new TotemPointsActivity(activity.totem_points);
+		} else if(activity.respawn) {
+			return new RespawnActivity(activity.respawn);
+		} else if(activity.totem_spawned) {
+			return new TotemSpawnActivity(activity.totem_spawned);
+		}
+	}
+
 	private enableModal(content: string) {
 		let data_div = document.getElementById("modal-data") as HTMLDivElement;
 		let close = document.getElementById("modal-close") as HTMLSpanElement;
@@ -233,7 +484,8 @@ class Game {
 		close.onclick = () => {
 			this.disableModal();
 		};
-		data_div.innerText = content;
+		data_div.innerHTML = content;
+		data_div.style.height = String(window.innerHeight * 2 / 3);
 		this._modal.style.display = "block";
 	}
 
@@ -339,6 +591,7 @@ window.onload = () => {
 	game.addCanvasListener("mouseout", stopDragging);
 	game.addCanvasListener("mousemove", dragBoard);
 
+	// Buttons
 	let login = document.getElementById("login") as HTMLButtonElement;
 	login.onclick = (_) => {
 		let user = document.getElementById("username") as HTMLInputElement;
@@ -348,6 +601,13 @@ window.onload = () => {
 		token.value = "";
 		game.render();
 	};
+
+	let logs = document.getElementById("logs") as HTMLButtonElement;
+	logs.onclick = (_) => {
+		game.getLogs();
+	};
+
+	// Stuff
 	setInterval(fetchingCounter, 1000);
 	game.render();
 };
