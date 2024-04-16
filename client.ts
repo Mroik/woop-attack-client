@@ -74,6 +74,7 @@ class Game {
 	private fetchCounter: number;
 	private _username: string | null;
 	private _token: string | null;
+	private _modal: HTMLDivElement;
 
 	public constructor() {
 		this._isDragging = false;
@@ -86,6 +87,7 @@ class Game {
 		this.fetchCounter = COUNTER;
 		this._username = null;
 		this._token = null;
+		this._modal = document.getElementById("modal") as HTMLDivElement;
 
 		let paren = document.getElementById("board-slot") as HTMLDivElement;
 		this.canvas = document.createElement("canvas");
@@ -151,7 +153,7 @@ class Game {
 			let first = base.map(k => `<td>${k}</td>`).join("");
 			let second = [
 				`${data.x}`,
-				`${data.x}`,
+				`${data.y}`,
 				`${data.player}`,
 				`${data.shields}`,
 				`${data.range}`,
@@ -216,13 +218,27 @@ class Game {
 		xhr.onload = () => {
 			const data = xhr.response;
 			if(data.error) {
-				console.log(data.error);
-				// TODO Open modal with error
+				this.enableModal(data.error);
 			} else {
 				this._username = user;
 				this._token = token;
 			}
 		};
+	}
+
+	private enableModal(content: string) {
+		let data_div = document.getElementById("modal-data") as HTMLDivElement;
+		let close = document.getElementById("modal-close") as HTMLSpanElement;
+
+		close.onclick = () => {
+			this.disableModal();
+		};
+		data_div.innerText = content;
+		this._modal.style.display = "block";
+	}
+
+	private disableModal() {
+		this._modal.style.display = "none";
 	}
 
 	public decreaseMultiplier(m: number) {
