@@ -206,6 +206,25 @@ class Game {
 		};
 	}
 
+	public authenticate(user: string, token: string) {
+		const xhr = new XMLHttpRequest();
+		xhr.open("POST", BASE_URL + "/auth");
+		xhr.setRequestHeader("username", user);
+		xhr.setRequestHeader("token", token);
+		xhr.send();
+		xhr.responseType = "json";
+		xhr.onload = () => {
+			const data = xhr.response;
+			if(data.error) {
+				console.log(data.error);
+				// TODO Open modal with error
+			} else {
+				this._username = user;
+				this._token = token;
+			}
+		};
+	}
+
 	public decreaseMultiplier(m: number) {
 		this.multiplier -= m;
 	}
@@ -246,9 +265,17 @@ class Game {
 		this._token = tok;
     }
 
+	get token() {
+		return this._token as string;
+	}
+
     set username(user: string) {
 		this._username = user;
     }
+
+	get username() {
+		return this._username as string;
+	}
 }
 
 let game: Game;
@@ -300,8 +327,7 @@ window.onload = () => {
 	login.onclick = (_) => {
 		let user = document.getElementById("username") as HTMLInputElement;
 		let token = document.getElementById("token") as HTMLInputElement;
-		game.username = user.value.trim();
-		game.token = token.value.trim();
+		game.authenticate(user.value, token.value);
 		user.value = "";
 		token.value = "";
 		game.render();
