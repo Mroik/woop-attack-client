@@ -477,6 +477,30 @@ class Game {
 		}
 	}
 
+	public shoot(from: [number, number], to: [number, number]) {
+		if(this._username === null || this._token === null) {
+			this.enableModal("You need to set your credentials first");
+			return;
+		}
+
+		const xhr = new XMLHttpRequest();
+		xhr.open("POST", BASE_URL + "/shoot");
+		xhr.setRequestHeader("username", this._username);
+		xhr.setRequestHeader("token", this._token);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(JSON.stringify({"from": from, "to": to}));
+		xhr.responseType = "json";
+		xhr.onload = () => {
+			if(xhr.response.error) {
+				this.enableModal(xhr.response.error);
+				return;
+			}
+			this.getMapData();
+			this.getLeaderboard();
+			this.render();
+		};
+	}
+
 	private enableModal(content: string) {
 		let data_div = document.getElementById("modal-data") as HTMLDivElement;
 		let close = document.getElementById("modal-close") as HTMLSpanElement;
@@ -605,6 +629,19 @@ window.onload = () => {
 	let logs = document.getElementById("logs") as HTMLButtonElement;
 	logs.onclick = (_) => {
 		game.getLogs();
+	};
+
+	let shoot = document.getElementById("shoot") as HTMLButtonElement;
+	shoot.onclick = (_) => {
+		let f_x = document.getElementById("shoot-from-x") as HTMLInputElement;
+		let f_y = document.getElementById("shoot-from-y") as HTMLInputElement;
+		let t_x = document.getElementById("shoot-to-x") as HTMLInputElement;
+		let t_y = document.getElementById("shoot-to-y") as HTMLInputElement;
+		game.shoot([Number(f_x.value), Number(f_y.value)], [Number(t_x.value), Number(t_y.value)]);
+		f_x.value = "";
+		f_y.value = "";
+		t_x.value = "";
+		t_y.value = "";
 	};
 
 	// Stuff

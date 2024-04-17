@@ -60,3 +60,7 @@ body {
 	text-decoration: none;
 	cursor: pointer;
 }
+
+.shootbox {
+	width: 3ch;
+}
