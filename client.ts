@@ -477,18 +477,18 @@ class Game {
 		}
 	}
 
-	public shoot(from: [number, number], to: [number, number]) {
+	private makeLoggedRequest(endpoint: string, jsonData: string) {
 		if(this._username === null || this._token === null) {
 			this.enableModal("You need to set your credentials first");
 			return;
 		}
 
 		const xhr = new XMLHttpRequest();
-		xhr.open("POST", BASE_URL + "/shoot");
+		xhr.open("POST", BASE_URL + endpoint);
 		xhr.setRequestHeader("username", this._username);
 		xhr.setRequestHeader("token", this._token);
 		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.send(JSON.stringify({"from": from, "to": to}));
+		xhr.send(jsonData);
 		xhr.responseType = "json";
 		xhr.onload = () => {
 			if(xhr.response.error) {
@@ -499,6 +499,14 @@ class Game {
 			this.getLeaderboard();
 			this.render();
 		};
+	}
+
+	public shoot(from: [number, number], to: [number, number]) {
+		this.makeLoggedRequest("/shoot", JSON.stringify({"from": from, "to": to}));
+	}
+
+	public move(from: [number, number], to: [number, number]) {
+		this.makeLoggedRequest("/move", JSON.stringify({"from": from, "to": to}));
 	}
 
 	private enableModal(content: string) {
@@ -638,6 +646,19 @@ window.onload = () => {
 		let t_x = document.getElementById("shoot-to-x") as HTMLInputElement;
 		let t_y = document.getElementById("shoot-to-y") as HTMLInputElement;
 		game.shoot([Number(f_x.value), Number(f_y.value)], [Number(t_x.value), Number(t_y.value)]);
+		f_x.value = "";
+		f_y.value = "";
+		t_x.value = "";
+		t_y.value = "";
+	};
+
+	let move = document.getElementById("move") as HTMLButtonElement;
+	move.onclick = (_) => {
+		let f_x = document.getElementById("move-from-x") as HTMLInputElement;
+		let f_y = document.getElementById("move-from-y") as HTMLInputElement;
+		let t_x = document.getElementById("move-to-x") as HTMLInputElement;
+		let t_y = document.getElementById("move-to-y") as HTMLInputElement;
+		game.move([Number(f_x.value), Number(f_y.value)], [Number(t_x.value), Number(t_y.value)]);
 		f_x.value = "";
 		f_y.value = "";
 		t_x.value = "";
