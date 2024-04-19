@@ -509,6 +509,10 @@ class Game {
 		this.makeLoggedRequest("/move", JSON.stringify({"from": from, "to": to}));
 	}
 
+	public generate_shield(coord: [number, number]) {
+		this.makeLoggedRequest("/shield", JSON.stringify({"coord": coord}));
+	}
+
 	private enableModal(content: string) {
 		let data_div = document.getElementById("modal-data") as HTMLDivElement;
 		let close = document.getElementById("modal-close") as HTMLSpanElement;
@@ -663,6 +667,15 @@ window.onload = () => {
 		f_y.value = "";
 		t_x.value = "";
 		t_y.value = "";
+	};
+
+	let shield = document.getElementById("shield") as HTMLButtonElement;
+	shield.onclick = (_) => {
+		let x = document.getElementById("shield-x") as HTMLInputElement;
+		let y = document.getElementById("shield-y") as HTMLInputElement;
+		game.generate_shield([Number(x.value), Number(y.value)]);
+		x.value = "";
+		y.value = "";
 	};
 
 	// Stuff
