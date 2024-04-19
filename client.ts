@@ -497,8 +497,14 @@ class Game {
 			}
 			this.getMapData();
 			this.getLeaderboard();
+			this.resetInfo();
 			this.render();
 		};
+	}
+
+	private resetInfo() {
+		let info = document.getElementById("info") as HTMLTableElement;
+		info.innerHTML = "";
 	}
 
 	public shoot(from: [number, number], to: [number, number]) {
@@ -511,6 +517,10 @@ class Game {
 
 	public generate_shield(coord: [number, number]) {
 		this.makeLoggedRequest("/shield", JSON.stringify({"coord": coord}));
+	}
+
+	public increase_range(coord: [number, number]) {
+		this.makeLoggedRequest("/increase-range", JSON.stringify({"coord": coord}));
 	}
 
 	private enableModal(content: string) {
@@ -674,6 +684,15 @@ window.onload = () => {
 		let x = document.getElementById("shield-x") as HTMLInputElement;
 		let y = document.getElementById("shield-y") as HTMLInputElement;
 		game.generate_shield([Number(x.value), Number(y.value)]);
+		x.value = "";
+		y.value = "";
+	};
+
+	let increase = document.getElementById("increase") as HTMLButtonElement;
+	increase.onclick = (_) => {
+		let x = document.getElementById("increase-x") as HTMLInputElement;
+		let y = document.getElementById("increase-y") as HTMLInputElement;
+		game.increase_range([Number(x.value), Number(y.value)]);
 		x.value = "";
 		y.value = "";
 	};
