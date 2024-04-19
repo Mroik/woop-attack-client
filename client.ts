@@ -527,6 +527,10 @@ class Game {
 		this.makeLoggedRequest("/build-zord", JSON.stringify({"coord": coord}));
 	}
 
+	public donate(player: string, amount: number) {
+		this.makeLoggedRequest("/donate-points", JSON.stringify({"amount": amount, "receiver": player}));
+	}
+
 	private enableModal(content: string) {
 		let data_div = document.getElementById("modal-data") as HTMLDivElement;
 		let close = document.getElementById("modal-close") as HTMLSpanElement;
@@ -708,6 +712,15 @@ window.onload = () => {
 		game.build_zord([Number(x.value), Number(y.value)]);
 		x.value = "";
 		y.value = "";
+	};
+
+	let donate = document.getElementById("donate") as HTMLButtonElement;
+	donate.onclick = (_) => {
+		let receiver = document.getElementById("receiver") as HTMLInputElement;
+		let amount = document.getElementById("amount") as HTMLInputElement;
+		game.donate(receiver.value, Number(amount.value));
+		receiver.value = "";
+		amount.value = "";
 	};
 
 	// Stuff
