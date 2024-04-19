@@ -523,6 +523,10 @@ class Game {
 		this.makeLoggedRequest("/increase-range", JSON.stringify({"coord": coord}));
 	}
 
+	public build_zord(coord: [number, number]) {
+		this.makeLoggedRequest("/build-zord", JSON.stringify({"coord": coord}));
+	}
+
 	private enableModal(content: string) {
 		let data_div = document.getElementById("modal-data") as HTMLDivElement;
 		let close = document.getElementById("modal-close") as HTMLSpanElement;
@@ -693,6 +697,15 @@ window.onload = () => {
 		let x = document.getElementById("increase-x") as HTMLInputElement;
 		let y = document.getElementById("increase-y") as HTMLInputElement;
 		game.increase_range([Number(x.value), Number(y.value)]);
+		x.value = "";
+		y.value = "";
+	};
+
+	let build = document.getElementById("build") as HTMLButtonElement;
+	build.onclick = (_) => {
+		let x = document.getElementById("build-x") as HTMLInputElement;
+		let y = document.getElementById("build-y") as HTMLInputElement;
+		game.build_zord([Number(x.value), Number(y.value)]);
 		x.value = "";
 		y.value = "";
 	};
