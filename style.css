@@ -64,3 +64,8 @@ body {
 .coordbox {
 	width: 3ch;
 }
+
+.control-unit {
+	border: 1px solid black;
+	padding: 5px;
+}
