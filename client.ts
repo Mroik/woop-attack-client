@@ -387,21 +387,21 @@ class Game {
 		xhr.send();
 		xhr.responseType = "json";
 		xhr.onload = () => {
-			const data = xhr.response.map;
+			const zords = xhr.response.zords;
+			const totems = xhr.response.totems;
 			this.entities = [];
-			data.forEach((e: any) => {
-				if(e.zord) {
-					this.entities.push(new Zord(
-						e.zord.owner,
-						e.zord.x,
-						e.zord.y,
-						e.zord.shields,
-						e.zord.range,
-						e.zord.hp
-					));
-				} else if(e.totem) {
-					this.entities.push(new Totem(e.totem.x, e.totem.y));
-				}
+			zords.forEach((e: any) => {
+				this.entities.push(new Zord(
+					e.owner,
+					e.x,
+					e.y,
+					e.shields,
+					e.range,
+					e.hp
+				));
+			});
+			totems.forEach((e: any) => {
+				this.entities.push(new Totem(e.x, e.y));
 			});
 			this.fetchCounter = 10;
 		};
