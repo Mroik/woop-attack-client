@@ -1,12 +1,13 @@
 const BASE_URL = "http://127.0.0.1:6969";
 const BOARD_SIZE = 140;
 const COUNTER = 10;
+
 enum EntityType {
 	Zord = "red",
 	Totem = "green",
 }
 
-class Activity {}
+class Activity { }
 
 class ShootActivity extends Activity {
 	public from: [number, number];
@@ -252,21 +253,21 @@ class Zord extends Entity {
 		this._hp = hp;
 	}
 
-    get player() {
+	get player() {
 		return this._player;
-    }
+	}
 
-    get hp() {
+	get hp() {
 		return this._hp;
-    }
+	}
 
-    get range() {
+	get range() {
 		return this._range;
-    }
+	}
 
-    get shields() {
+	get shields() {
 		return this._shield;
-    }
+	}
 }
 
 class Totem extends Entity {
@@ -322,13 +323,13 @@ class Game {
 		};
 	}
 
-    public render() {
+	public render() {
 		let size = this.edgeLength() / BOARD_SIZE;
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		this.context.beginPath();
 		this.context.globalAlpha = 0.05;
-		for(let i = 0; i < BOARD_SIZE + 1; i++) {
+		for (let i = 0; i < BOARD_SIZE + 1; i++) {
 			this.context.moveTo(i * size + this.boardOffsetX, this.boardOffsetY);
 			this.context.lineTo(i * size + this.boardOffsetX, BOARD_SIZE * size + this.boardOffsetY);
 
@@ -339,9 +340,9 @@ class Game {
 		this.context.globalAlpha = 1;
 
 		this.entities.forEach(entity => {
-			if(entity instanceof Zord && (entity as Zord).player == this._username) {
+			if (entity instanceof Zord && (entity as Zord).player == this._username) {
 				this.context.fillStyle = "blue";
-			} else if(entity instanceof Zord) {
+			} else if (entity instanceof Zord) {
 				this.context.fillStyle = EntityType.Zord;
 			} else {
 				this.context.fillStyle = EntityType.Totem;
@@ -355,14 +356,14 @@ class Game {
 		this.context.fillText(`(${this.currentX}, ${this.currentY})`, 10, 50);
 		this.context.fillText(`${this.fetchCounter}`, 600, 50);
 		this.context.globalAlpha = 1;
-    }
+	}
 
-    private updateInfo() {
+	private updateInfo() {
 		let info = document.getElementById("info") as HTMLTableElement;
 		let data = this.entities.find(entity => {
 			return (entity instanceof Zord && entity.x == this.currentX && entity.y == this.currentY);
 		}) as Zord;
-		if(data) {
+		if (data) {
 			let base = Object.keys(data);
 			let first = base.map(k => `<td>${k}</td>`).join("");
 			let second = [
@@ -375,11 +376,11 @@ class Game {
 			].map(d => `<td>${d}</td>`).join("");
 			info.innerHTML = `<tr>${first}</tr><tr>${second}</tr>`;
 		}
-    }
+	}
 
-    private edgeLength() {
+	private edgeLength() {
 		return this.canvas.width * this.multiplier;
-    }
+	}
 
 	public getMapData() {
 		const xhr = new XMLHttpRequest();
@@ -431,7 +432,7 @@ class Game {
 		xhr.responseType = "json";
 		xhr.onload = () => {
 			const data = xhr.response;
-			if(data.error) {
+			if (data.error) {
 				this.enableModal(data.error);
 			} else {
 				this._username = user;
@@ -456,29 +457,29 @@ class Game {
 	}
 
 	private parseActivity(activity: any) {
-		if(activity.shoot) {
+		if (activity.shoot) {
 			return new ShootActivity(activity.shoot);
-		} else if(activity.move) {
+		} else if (activity.move) {
 			return new MoveActivity(activity.move);
-		} else if(activity.generate_shield) {
+		} else if (activity.generate_shield) {
 			return new ShieldActivity(activity.generate_shield);
-		} else if(activity.increase_range) {
+		} else if (activity.increase_range) {
 			return new IncreaseRangeActivity(activity.increase_range);
-		} else if(activity.donate_points) {
+		} else if (activity.donate_points) {
 			return new DonatePointsActivity(activity.donate_points);
-		} else if(activity.build_zord) {
+		} else if (activity.build_zord) {
 			return new BuildZordActivity(activity.build_zord);
-		} else if(activity.totem_points) {
+		} else if (activity.totem_points) {
 			return new TotemPointsActivity(activity.totem_points);
-		} else if(activity.respawn) {
+		} else if (activity.respawn) {
 			return new RespawnActivity(activity.respawn);
-		} else if(activity.totem_spawned) {
+		} else if (activity.totem_spawned) {
 			return new TotemSpawnActivity(activity.totem_spawned);
 		}
 	}
 
 	private makeLoggedRequest(endpoint: string, jsonData: string) {
-		if(this._username === null || this._token === null) {
+		if (this._username === null || this._token === null) {
 			this.enableModal("You need to set your credentials first");
 			return;
 		}
@@ -491,7 +492,7 @@ class Game {
 		xhr.send(jsonData);
 		xhr.responseType = "json";
 		xhr.onload = () => {
-			if(xhr.response.error) {
+			if (xhr.response.error) {
 				this.enableModal(xhr.response.error);
 				return;
 			}
@@ -508,27 +509,27 @@ class Game {
 	}
 
 	public shoot(from: [number, number], to: [number, number]) {
-		this.makeLoggedRequest("/shoot", JSON.stringify({"from": from, "to": to}));
+		this.makeLoggedRequest("/shoot", JSON.stringify({ "from": from, "to": to }));
 	}
 
 	public move(from: [number, number], to: [number, number]) {
-		this.makeLoggedRequest("/move", JSON.stringify({"from": from, "to": to}));
+		this.makeLoggedRequest("/move", JSON.stringify({ "from": from, "to": to }));
 	}
 
 	public generate_shield(coord: [number, number]) {
-		this.makeLoggedRequest("/shield", JSON.stringify({"coord": coord}));
+		this.makeLoggedRequest("/shield", JSON.stringify({ "coord": coord }));
 	}
 
 	public increase_range(coord: [number, number]) {
-		this.makeLoggedRequest("/increase-range", JSON.stringify({"coord": coord}));
+		this.makeLoggedRequest("/increase-range", JSON.stringify({ "coord": coord }));
 	}
 
 	public build_zord(coord: [number, number]) {
-		this.makeLoggedRequest("/build-zord", JSON.stringify({"coord": coord}));
+		this.makeLoggedRequest("/build-zord", JSON.stringify({ "coord": coord }));
 	}
 
 	public donate(player: string, amount: number) {
-		this.makeLoggedRequest("/donate-points", JSON.stringify({"amount": amount, "receiver": player}));
+		this.makeLoggedRequest("/donate-points", JSON.stringify({ "amount": amount, "receiver": player }));
 	}
 
 	private enableModal(content: string) {
@@ -550,7 +551,7 @@ class Game {
 	public decreaseMultiplier(m: number) {
 		this.multiplier -= m;
 	}
-	
+
 	set isDragging(d: boolean) {
 		this._isDragging = d;
 	}
@@ -559,41 +560,41 @@ class Game {
 		return this._isDragging;
 	}
 
-    public addBoardOffsetX(movementX: number) {
+	public addBoardOffsetX(movementX: number) {
 		this.boardOffsetX += movementX;
-    }
+	}
 
-    public addBoardOffsetY(movementY: number) {
+	public addBoardOffsetY(movementY: number) {
 		this.boardOffsetY += movementY;
-    }
+	}
 
-    public decreaseCounter() {
+	public decreaseCounter() {
 		this.fetchCounter -= 1;
-    }
+	}
 
-    public getCounter() {
+	public getCounter() {
 		return this.fetchCounter;
-    }
+	}
 
-    public resetCounter() {
+	public resetCounter() {
 		this.fetchCounter = COUNTER;
-    }
+	}
 
-    public addCanvasListener(event: string, callable: (ev: any) => void) {
+	public addCanvasListener(event: string, callable: (ev: any) => void) {
 		this.canvas.addEventListener(event, callable, false);
-    }
+	}
 
-    set token(tok: string) {
+	set token(tok: string) {
 		this._token = tok;
-    }
+	}
 
 	get token() {
 		return this._token as string;
 	}
 
-    set username(user: string) {
+	set username(user: string) {
 		this._username = user;
-    }
+	}
 
 	get username() {
 		return this._username as string;
@@ -619,7 +620,7 @@ let stopDragging = (_: any) => {
 };
 
 let dragBoard = (ev: MouseEvent) => {
-	if(!game.isDragging) {
+	if (!game.isDragging) {
 		return;
 	}
 	game.addBoardOffsetX(ev.movementX);
@@ -629,7 +630,7 @@ let dragBoard = (ev: MouseEvent) => {
 
 let fetchingCounter = () => {
 	game.decreaseCounter();
-	if(game.getCounter() <= 0) {
+	if (game.getCounter() <= 0) {
 		game.resetCounter();
 		game.getMapData();
 		game.getLeaderboard();
